@@ -23,4 +23,4 @@ Phase 1 (Current): React, Vite, Tailwind CSS v4, React Router, automated CI/CD d
 Phase 2 (Planned): Migrating the service layer to Supabase (PostgreSQL + Auth + Row-Level Security) and expanding the hardware/software benchmark catalog without rewriting UI components.
 
 * **Live Demo:**
->>>>>>> be890519bcb8305e41de3c305a1ad454b24e9869
+* **https://thlakdev.github.io/rigcheck/**
