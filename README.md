@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
@@ -12,10 +11,6 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
-=======
 # rigcheck
 PC &amp; laptop hardware compatibility checker and community review hub. Enter your specs once to spot bottlenecks across games and software, save multiple rigs, and control public profile visibility—built with React, Vite, and Tailwind CSS on a modular service layer ready for Supabase.
 # RigCheck — Can You Run It?
