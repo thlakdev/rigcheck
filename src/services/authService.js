@@ -1,7 +1,6 @@
 import { supabase } from './supabaseClient';
 
 export const authService = {
-  // 1. Register a new user; metadata is read by your SQL trigger to create public.profiles
   async register({ email, password, displayName, handle, isPublic = true }) {
     const cleanHandle = (handle || '')
       .toLowerCase()
@@ -25,7 +24,6 @@ export const authService = {
     return data;
   },
 
-  // 2. Sign in an existing user with email and password
   async login({ email, password }) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
@@ -36,13 +34,23 @@ export const authService = {
     return data;
   },
 
-  // 3. Sign out and clear the browser session
+  async signInWithOAuth(provider) {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider, // 'google' | 'github' | 'discord'
+      options: {
+        redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
+      },
+    });
+
+    if (error) throw error;
+    return data;
+  },
+
   async logout() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   },
 
-  // 4. Send a password reset link to the user's email
   async resetPassword(email) {
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
       redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}#/login`,
@@ -51,7 +59,6 @@ export const authService = {
     if (error) throw error;
   },
 
-  // 5. Fetch the user's custom RigCheck profile row from public.profiles
   async getProfile(userId) {
     const { data, error } = await supabase
       .from('profiles')
@@ -63,7 +70,6 @@ export const authService = {
     return data;
   },
 
-  // 6. Update public/private profile visibility in PostgreSQL
   async updatePrivacy(userId, isPublic) {
     const { data, error } = await supabase
       .from('profiles')

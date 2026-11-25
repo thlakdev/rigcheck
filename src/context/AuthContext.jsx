@@ -43,13 +43,14 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const value = {
+const value = {
     user,
     profile,
     loading,
     isAuthenticated: Boolean(user),
     register: authService.register,
     login: authService.login,
+    signInWithOAuth: authService.signInWithOAuth,
     logout: authService.logout,
     resetPassword: authService.resetPassword,
     updatePrivacy: async (isPublic) => {

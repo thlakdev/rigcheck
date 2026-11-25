@@ -20,63 +20,52 @@ import {
   ArrowRight,
   ArrowLeft,
   LogOut,
-  Gamepad2,
   Zap,
   Globe,
-  Server,
-  Database,
-  Fingerprint,
-  Smartphone,
-  Terminal,
-  X,
-  ChevronRight,
   Loader2,
   Sliders,
   Star,
   Laptop,
-  Code2,
   Info,
   Copy
 } from 'lucide-react';
 
 // ============================================================================
-// 1. SAMPLE LIVE SHOWCASE RIG DATA (Left Panel Interactive Hardware Preview)
+// 1. LIVE SHOWCASE RIG DATA (Left Panel Interactive Hardware Preview)
 // ============================================================================
 const SHOWCASE_BUILDS = [
   {
     id: 'enthusiast-1440p',
     label: 'Primary Desktop',
-    tier: '1440p Enthusiast',
     score: 862,
     cpu: 'AMD Ryzen 7 7800X3D',
     cpuScore: 915,
     gpu: 'NVIDIA RTX 4070 Super (12GB)',
-    gpuScore: 810,
+    gpuScore: 835,
     ram: '32GB DDR5-6000',
     storage: '2TB NVMe Gen4 SSD',
-    balance: { label: 'Well-Balanced', note: 'Optimal CPU/GPU pairing for 1440p high-refresh' },
+    balance: { label: 'Well-Balanced' },
     titles: [
       { name: 'Cyberpunk 2077', category: 'AAA RPG', status: 'recommended', note: '1440p Ultra • 95+ FPS' },
-      { name: 'Alan Wake 2', category: 'Next-Gen', status: 'recommended', note: '1440p High + DLSS' },
-      { name: 'Unreal Engine 5', category: 'Creative 3D', status: 'minimum', note: 'Bottleneck: 64GB RAM recommended for huge scenes' }
+      { name: 'Red Dead Redemption 2', category: 'Open World', status: 'recommended', note: '1440p Max • 100+ FPS' },
+      { name: 'DaVinci Resolve Studio', category: '4K Video', status: 'recommended', note: 'Smooth 4K timeline playback' }
     ]
   },
   {
     id: 'college-laptop',
-    label: 'College Ultrabook',
-    tier: 'Portable Creator',
+    label: 'Portable Ultrabook',
     score: 545,
-    cpu: 'AMD Ryzen 7 8840U',
-    cpuScore: 635,
-    gpu: 'Radeon 780M Integrated (4GB)',
-    gpuScore: 215,
+    cpu: 'Intel Core Ultra 5 226V',
+    cpuScore: 640,
+    gpu: 'Intel Arc 130V Integrated',
+    gpuScore: 245,
     ram: '16GB LPDDR5X',
     storage: '512GB NVMe SSD',
-    balance: { label: 'GPU-Bound', note: 'Strong productivity CPU; integrated graphics limits AAA' },
+    balance: { label: 'GPU-Bound' },
     titles: [
       { name: 'Valorant', category: 'Esports', status: 'recommended', note: '1080p High • 160+ FPS' },
-      { name: 'Adobe Photoshop', category: 'Creative', status: 'recommended', note: 'Smooth multi-layer canvas' },
-      { name: 'Black Myth: Wukong', category: 'AAA Action', status: 'cannot_run', note: 'Bottleneck: Requires 6GB VRAM (4GB installed)' }
+      { name: 'Red Dead Redemption 2', category: 'Open World', status: 'cannot_run', note: 'Bottleneck: Integrated GPU below minimum' },
+      { name: 'Cyberpunk 2077', category: 'AAA RPG', status: 'cannot_run', note: 'Bottleneck: Requires 6GB VRAM' }
     ]
   }
 ];
@@ -145,203 +134,7 @@ function evaluatePassword(pw) {
 }
 
 // ============================================================================
-// 4. SUB-COMPONENT: BACKEND & AUTH ARCHITECTURE SLIDE-OVER DRAWER
-// ============================================================================
-function AuthArchitectureDrawer({ open, onClose }) {
-  const [activeCodeTab, setActiveCodeTab] = useState('adapter'); // 'adapter' | 'prisma' | 'roadmap'
-
-  useEffect(() => {
-    if (!open) return;
-    const onKeyDown = e => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/75 backdrop-blur-sm">
-      <div className="flex-1" onClick={onClose} aria-hidden="true" />
-
-      <aside
-        role="dialog"
-        aria-modal="true"
-        aria-label="Backend and Auth Architecture Blueprint"
-        className="w-full max-w-2xl bg-[#0c1220] border-l border-slate-800 h-full overflow-y-auto shadow-2xl flex flex-col"
-      >
-        <div className="sticky top-0 z-10 bg-[#0c1220]/95 backdrop-blur-md px-6 py-4 border-b border-slate-800 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-violet-500/15 border border-violet-500/30 flex items-center justify-center">
-              <Server className="w-4 h-4 text-violet-400" />
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-white">Backend & Auth Architecture Blueprint</h2>
-              <p className="text-xs text-slate-400">
-                Supabase Auth + PostgreSQL RLS • Modular Service Layer
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-            aria-label="Close Architecture Blueprint"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="px-6 pt-4 flex flex-wrap gap-2 border-b border-slate-800/80 pb-3">
-          {[
-            { id: 'adapter', label: 'Service Layer', icon: Code2 },
-            { id: 'prisma', label: 'PostgreSQL / Prisma', icon: Database },
-            { id: 'roadmap', label: 'Expansion Roadmap', icon: Zap }
-          ].map(tab => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveCodeTab(tab.id)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                  activeCodeTab === tab.id
-                    ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40'
-                    : 'bg-[#111827] text-slate-400 hover:text-slate-200 border border-slate-800'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="p-6 space-y-5 flex-1 text-sm">
-          {activeCodeTab === 'adapter' && (
-            <>
-              <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/25 text-xs text-cyan-100 leading-relaxed">
-                <strong className="text-cyan-300">Decoupled Auth Layer:</strong> All login, registration, password reset, and profile visibility controls go through <code className="text-cyan-300 font-mono">AuthContext</code> and <code className="text-cyan-300 font-mono">src/services/authService.js</code> backed by Supabase PKCE auth.
-              </div>
-
-              <div className="rounded-xl bg-[#070b14] border border-slate-800 overflow-hidden">
-                <div className="px-4 py-2 border-b border-slate-800 text-[11px] font-mono text-slate-400 flex items-center justify-between">
-                  <span>src/services/authService.js</span>
-                  <span className="text-emerald-400">Active Phase 2</span>
-                </div>
-                <pre className="p-4 text-[11px] leading-relaxed font-mono text-slate-300 overflow-x-auto">
-{`export interface AuthServiceContract {
-  register({ email, password, displayName, handle, isPublic }): Promise<AuthData>;
-  login({ email, password }): Promise<AuthData>;
-  logout(): Promise<void>;
-  resetPassword(email: string): Promise<void>;
-  getProfile(userId: string): Promise<PublicProfile>;
-  updatePrivacy(userId: string, isPublic: boolean): Promise<PublicProfile>;
-}`}
-                </pre>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800">
-                  <div className="font-bold text-emerald-400 mb-1">Active Phase 2 Stack</div>
-                  <p className="text-slate-400 leading-relaxed">
-                    Supabase Auth (PKCE flow) + PostgreSQL <code className="text-slate-300">public.profiles</code> table with Row Level Security and auto-signup trigger.
-                  </p>
-                </div>
-                <div className="p-3.5 rounded-xl bg-[#111827] border border-slate-800">
-                  <div className="font-bold text-violet-400 mb-1">Future Expansion Ready</div>
-                  <p className="text-slate-400 leading-relaxed">
-                    Plug in saved rigs, component reviews, OAuth providers (Google/GitHub/Discord), or migrate seamlessly to Next.js App Router + Prisma.
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
-
-          {activeCodeTab === 'prisma' && (
-            <>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Relational PostgreSQL schema backing <code className="text-cyan-300">public.profiles</code> today and extending cleanly to saved rigs, community reviews, and API tokens.
-              </p>
-
-              <div className="rounded-xl bg-[#070b14] border border-slate-800 overflow-hidden">
-                <div className="px-4 py-2 border-b border-slate-800 text-[11px] font-mono text-slate-400 flex items-center justify-between">
-                  <span>supabase / postgres schema</span>
-                  <span className="text-cyan-400">PostgreSQL (Supabase)</span>
-                </div>
-                <pre className="p-4 text-[11px] leading-relaxed font-mono text-slate-300 overflow-x-auto">
-{`create table public.profiles (
-  id uuid primary key references auth.users(id) on delete cascade,
-  handle text unique not null,
-  display_name text not null,
-  is_public boolean not null default true,
-  created_at timestamptz not null default now()
-);
-
--- Planned Phase 3 Tables:
--- public.saved_rigs (id, user_id, label, cpu_id, gpu_id, ram_gb, is_visible)
--- public.component_reviews (id, user_id, component_id, rating, tags, body)
--- public.compatibility_logs (id, user_id, rig_id, title_id, verdict)`}
-                </pre>
-              </div>
-            </>
-          )}
-
-          {activeCodeTab === 'roadmap' && (
-            <div className="space-y-3">
-              {[
-                {
-                  icon: Fingerprint,
-                  badge: 'Phase 3 • Security',
-                  tone: 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30',
-                  title: 'OAuth Providers & Passkeys (WebAuthn)',
-                  desc: 'Enable Google, GitHub, and Discord OAuth in Supabase Auth plus passwordless biometric sign-in.'
-                },
-                {
-                  icon: Gamepad2,
-                  badge: 'Phase 3 • Data Sync',
-                  tone: 'text-cyan-400 bg-cyan-500/15 border-cyan-500/30',
-                  title: 'Cloud Saved Rigs & Community Reviews',
-                  desc: 'Persist saved desktop/laptop rigs, per-spec privacy toggles, and real-world hardware reviews in Supabase PostgreSQL.'
-                },
-                {
-                  icon: Terminal,
-                  badge: 'Phase 4 • Ecosystem',
-                  tone: 'text-violet-400 bg-violet-500/15 border-violet-500/30',
-                  title: 'RigCheck Desktop Agent API Tokens',
-                  desc: 'Scoped personal access tokens allowing a companion desktop utility to detect CPU, GPU, VRAM, and RAM automatically.'
-                }
-              ].map(item => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.title}
-                    className="p-4 rounded-2xl bg-[#111827] border border-slate-800 flex items-start gap-3.5"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-[#070b14] border border-slate-800 flex items-center justify-center shrink-0">
-                      <Icon className="w-5 h-5 text-cyan-400" />
-                    </div>
-                    <div className="space-y-1">
-                      <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${item.tone}`}>
-                        {item.badge}
-                      </span>
-                      <h3 className="text-sm font-bold text-white">{item.title}</h3>
-                      <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-// ============================================================================
-// 5. SUB-COMPONENT: POST-LOGIN AUTHENTICATED SESSION HANDOFF SCREEN
+// 4. POST-LOGIN AUTHENTICATED SESSION HANDOFF VIEW
 // ============================================================================
 function AuthenticatedSessionView({
   user,
@@ -349,28 +142,23 @@ function AuthenticatedSessionView({
   onTogglePrivacy,
   onSignOut,
   onLaunchApp,
-  onOpenArchitecture,
   showToast
 }) {
-  const [activeSection, setActiveSection] = useState('overview'); // 'overview' | 'security'
   const [signingOut, setSigningOut] = useState(false);
   const [privacySaving, setPrivacySaving] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
 
-  // Preview state for Phase 3/4 security controls
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-  const [passkeysCount, setPasskeysCount] = useState(0);
-  const [agentTokensCount, setAgentTokensCount] = useState(0);
-  const [generatedToken, setGeneratedToken] = useState(null);
-
   const displayName =
     profile?.display_name ||
     user?.user_metadata?.display_name ||
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.user_name ||
     user?.email?.split('@')[0] ||
     'RigCheck Builder';
   const handle =
     profile?.handle ||
     user?.user_metadata?.handle ||
+    user?.user_metadata?.user_name ||
     'member';
   const isPublicProfile = profile?.is_public ?? true;
   const provider = user?.app_metadata?.provider || 'email';
@@ -405,25 +193,6 @@ function AuthenticatedSessionView({
     setTimeout(() => setCopiedUrl(false), 2000);
   };
 
-  const handleToggle2FA = () => {
-    const next = !twoFactorEnabled;
-    setTwoFactorEnabled(next);
-    showToast(next ? '2FA preview enabled (connect Supabase MFA in Phase 3).' : '2FA preview disabled.', 'info');
-  };
-
-  const handleEnrollPasskey = () => {
-    const nextCount = passkeysCount + 1;
-    setPasskeysCount(nextCount);
-    showToast(`Passkey #${nextCount} preview registered (WebAuthn hook ready).`, 'info');
-  };
-
-  const handleGenerateAgentToken = () => {
-    const rand = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
-    setGeneratedToken(`rgc_live_${rand.slice(0, 24)}`);
-    setAgentTokensCount(c => c + 1);
-    showToast('Generated scoped Desktop Agent API token preview.', 'info');
-  };
-
   const initials = displayName
     .split(' ')
     .map(w => w[0])
@@ -444,30 +213,20 @@ function AuthenticatedSessionView({
                 Rig<span className="text-cyan-400">Check</span>
               </div>
               <div className="text-[10px] font-semibold text-emerald-400 tracking-wide uppercase">
-                Supabase Session Active
+                Signed In
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onOpenArchitecture}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#111827] hover:bg-slate-800 border border-slate-800 text-xs font-medium text-slate-300 transition-colors"
-            >
-              <Server className="w-3.5 h-3.5 text-violet-400" />
-              Auth Architecture
-            </button>
-            <button
-              type="button"
-              onClick={handleSignOutClick}
-              disabled={signingOut}
-              className="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-1.5 transition-colors disabled:opacity-50"
-            >
-              {signingOut ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <LogOut className="w-3.5 h-3.5" />}
-              Sign Out
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleSignOutClick}
+            disabled={signingOut}
+            className="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-1.5 transition-colors disabled:opacity-50"
+          >
+            {signingOut ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <LogOut className="w-3.5 h-3.5" />}
+            Sign Out
+          </button>
         </div>
       </header>
 
@@ -484,7 +243,7 @@ function AuthenticatedSessionView({
                 <div className="flex flex-wrap items-center gap-2 mb-1">
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                     <CheckCircle2 className="w-3 h-3" />
-                    Authenticated
+                    Active Member
                   </span>
                   <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 capitalize">
                     {provider === 'email' ? 'Email & Password' : `${provider} OAuth`}
@@ -534,291 +293,121 @@ function AuthenticatedSessionView({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 border-b border-slate-800 pb-3">
-          <button
-            type="button"
-            onClick={() => setActiveSection('overview')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
-              activeSection === 'overview'
-                ? 'bg-cyan-500 text-slate-950'
-                : 'bg-[#111827] text-slate-400 hover:text-white border border-slate-800'
-            }`}
-          >
-            <Zap className="w-3.5 h-3.5" />
-            Unlocked Capabilities & Session
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveSection('security')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
-              activeSection === 'security'
-                ? 'bg-cyan-500 text-slate-950'
-                : 'bg-[#111827] text-slate-400 hover:text-white border border-slate-800'
-            }`}
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            Security & Expansion Hooks
-          </button>
-        </div>
-
-        {activeSection === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <div className="lg:col-span-8 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {[
-                  {
-                    icon: Sliders,
-                    title: 'Instant Compatibility Engine',
-                    desc: 'Check CPU, GPU, VRAM, RAM, and SSD requirements across AAA games & creative suites.'
-                  },
-                  {
-                    icon: Laptop,
-                    title: 'Multi-Rig Cloud Profiles',
-                    desc: 'Save & switch between your Primary Desktop, College Laptop, and Secondary builds.'
-                  },
-                  {
-                    icon: Star,
-                    title: 'Community Hardware Reviews',
-                    desc: 'Publish, edit, and tag real-world reviews for CPUs, GPUs, and complete setups.'
-                  },
-                  {
-                    icon: Shield,
-                    title: 'Granular Profile Privacy',
-                    desc: 'Toggle individual saved rigs, spec fields, and reviews on your shareable URL.'
-                  }
-                ].map(cap => {
-                  const Icon = cap.icon;
-                  return (
-                    <div
-                      key={cap.title}
-                      className="p-4 rounded-2xl border bg-[#111827] border-slate-800"
-                    >
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <div className="w-9 h-9 rounded-xl bg-[#070b14] border border-slate-800 flex items-center justify-center">
-                          <Icon className="w-4 h-4 text-cyan-400" />
-                        </div>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-emerald-500/15 text-emerald-300 border-emerald-500/30">
-                          Unlocked
-                        </span>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <div className="lg:col-span-8 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              {[
+                {
+                  icon: Sliders,
+                  title: 'Instant Compatibility Engine',
+                  desc: 'Evaluate CPU, GPU, VRAM, RAM, and SSD specs against games and creative suites.'
+                },
+                {
+                  icon: Laptop,
+                  title: 'Scored Laptop & Component Catalog',
+                  desc: 'Compare desktop parts and laptops side-by-side with thermal scaling.'
+                },
+                {
+                  icon: Zap,
+                  title: 'Bottleneck Detection',
+                  desc: 'Identify CPU-bound or GPU-bound pairings before buying or upgrading parts.'
+                },
+                {
+                  icon: Shield,
+                  title: 'Saved Cloud Builds',
+                  desc: 'Save multiple desktop and laptop builds to your account and edit them anytime.'
+                }
+              ].map(cap => {
+                const Icon = cap.icon;
+                return (
+                  <div
+                    key={cap.title}
+                    className="p-4 rounded-2xl border bg-[#111827] border-slate-800"
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="w-9 h-9 rounded-xl bg-[#070b14] border border-slate-800 flex items-center justify-center">
+                        <Icon className="w-4 h-4 text-cyan-400" />
                       </div>
-                      <h3 className="text-sm font-bold text-white">{cap.title}</h3>
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">{cap.desc}</p>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-emerald-500/15 text-emerald-300 border-emerald-500/30">
+                        Active
+                      </span>
                     </div>
-                  );
-                })}
-              </div>
-
-              <div className="p-5 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-violet-500/10 border border-cyan-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-sm font-bold text-white">
-                    Your RigCheck session is synced with Supabase
-                  </h3>
-                  <p className="text-xs text-slate-300 mt-0.5">
-                    Proceed straight to the Spec Builder, Hardware Reviews Hub, or your Privacy Dashboard.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={onLaunchApp}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shrink-0 shadow-lg shadow-cyan-500/20"
-                >
-                  Launch RigCheck App
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+                    <h3 className="text-sm font-bold text-white">{cap.title}</h3>
+                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">{cap.desc}</p>
+                  </div>
+                );
+              })}
             </div>
 
-            <div className="lg:col-span-4 rounded-2xl bg-[#111827] border border-slate-800 p-5 flex flex-col justify-between gap-4">
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-violet-500/10 border border-cyan-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
-                  <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                  Session Telemetry
+                <h3 className="text-sm font-bold text-white">
+                  Ready to benchmark and compare builds
                 </h3>
-                <div className="space-y-2.5 text-xs">
-                  <div className="flex justify-between gap-2 py-1.5 border-b border-slate-800/80">
-                    <span className="text-slate-500">User ID</span>
-                    <span className="font-mono text-slate-200 truncate max-w-[165px]" title={user?.id}>
-                      {user?.id}
-                    </span>
-                  </div>
-                  <div className="flex justify-between gap-2 py-1.5 border-b border-slate-800/80">
-                    <span className="text-slate-500">Auth Backend</span>
-                    <span className="font-mono text-emerald-400">supabase-pkce</span>
-                  </div>
-                  <div className="flex justify-between gap-2 py-1.5 border-b border-slate-800/80">
-                    <span className="text-slate-500">Profile Row</span>
-                    <span className="font-mono text-cyan-300">{profile ? 'Synced' : 'Pending'}</span>
-                  </div>
-                  <div className="flex justify-between gap-2 py-1.5">
-                    <span className="text-slate-500">Last Sign In</span>
-                    <span className="text-slate-300">
-                      {user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleTimeString() : 'Active'}
-                    </span>
-                  </div>
-                </div>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Open the RigCheck Spec Builder, Part &amp; Laptop Scorer, and your saved builds.
+                </p>
               </div>
-
               <button
                 type="button"
-                onClick={handleSignOutClick}
-                disabled={signingOut}
-                className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 border border-slate-700 transition-colors disabled:opacity-50"
+                onClick={onLaunchApp}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 hover:from-cyan-300 hover:to-indigo-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shrink-0 shadow-lg shadow-cyan-500/20"
               >
-                <LogOut className="w-3.5 h-3.5 text-rose-400" />
-                Sign Out & Return to Login
+                Launch RigCheck App
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
-        )}
 
-        {activeSection === 'security' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            <div className="lg:col-span-6 rounded-2xl bg-[#111827] border border-slate-800 p-5 space-y-4">
-              <div>
-                <h3 className="text-base font-bold text-white">OAuth & Gaming Integrations</h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Planned Supabase OAuth providers and gaming library hooks for Phase 3.
-                </p>
-              </div>
-
-              <div className="space-y-2.5">
-                {[
-                  { name: 'Google OAuth', desc: 'Single sign-on via Supabase Providers', icon: GoogleIcon },
-                  { name: 'GitHub OAuth', desc: 'Developer profile & OSS badge', icon: GitHubIcon },
-                  { name: 'Discord OAuth', desc: 'Community rig showcase embeds', icon: DiscordIcon }
-                ].map(item => {
-                  const Icon = item.icon;
-                  return (
-                    <div
-                      key={item.name}
-                      className="p-3.5 rounded-xl bg-[#070b14] border border-slate-800 flex items-center justify-between gap-3"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-[#111827] border border-slate-800 flex items-center justify-center">
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-semibold text-white">{item.name}</div>
-                          <div className="text-[11px] text-slate-400">{item.desc}</div>
-                        </div>
-                      </div>
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-violet-500/10 border border-violet-500/30 text-violet-300 shrink-0">
-                        Phase 3 Hook
-                      </span>
-                    </div>
-                  );
-                })}
-
-                {[
-                  { name: 'Steam Library Sync', desc: 'Auto-check every owned game against your saved rigs' },
-                  { name: 'Epic Games Store', desc: 'Import Epic catalog & Unreal Engine tools' }
-                ].map(ext => (
-                  <div
-                    key={ext.name}
-                    className="p-3.5 rounded-xl bg-[#070b14]/60 border border-dashed border-slate-800 flex items-center justify-between gap-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-[#111827] border border-slate-800 flex items-center justify-center">
-                        <Gamepad2 className="w-4 h-4 text-slate-500" />
-                      </div>
-                      <div>
-                        <div className="text-sm font-semibold text-slate-300">{ext.name}</div>
-                        <div className="text-[11px] text-slate-500">{ext.desc}</div>
-                      </div>
-                    </div>
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-800 border border-slate-700 text-slate-400 shrink-0">
-                      Planned
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="lg:col-span-6 space-y-4">
-              <div className="rounded-2xl bg-[#111827] border border-slate-800 p-5 space-y-4">
-                <h3 className="text-base font-bold text-white">Advanced Security Controls</h3>
-
-                <div className="p-4 rounded-xl bg-[#070b14] border border-slate-800 flex items-center justify-between gap-3">
-                  <div className="flex items-start gap-3">
-                    <Fingerprint className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-sm font-semibold text-white">Passkeys (WebAuthn)</div>
-                      <div className="text-xs text-slate-400 mt-0.5">
-                        {passkeysCount > 0
-                          ? `${passkeysCount} passkey(s) registered in preview mode.`
-                          : 'Sign in with Touch ID, Windows Hello, or YubiKey.'}
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleEnrollPasskey}
-                    className="px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/40 text-cyan-300"
-                  >
-                    + Add Passkey
-                  </button>
+          <div className="lg:col-span-4 rounded-2xl bg-[#111827] border border-slate-800 p-5 flex flex-col justify-between gap-4">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                Account Summary
+              </h3>
+              <div className="space-y-2.5 text-xs">
+                <div className="flex justify-between gap-2 py-1.5 border-b border-slate-800/80">
+                  <span className="text-slate-500">Handle</span>
+                  <span className="font-mono text-cyan-300">@{handle}</span>
                 </div>
-
-                <div className="p-4 rounded-xl bg-[#070b14] border border-slate-800 flex items-center justify-between gap-3">
-                  <div className="flex items-start gap-3">
-                    <Smartphone className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-sm font-semibold text-white">Two-Factor Auth (TOTP)</div>
-                      <div className="text-xs text-slate-400 mt-0.5">
-                        Protect saved rigs and verified hardware reviews with an authenticator app.
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleToggle2FA}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 border ${
-                      twoFactorEnabled
-                        ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                        : 'bg-slate-800 border-slate-700 text-slate-200 hover:border-cyan-500/50'
-                    }`}
-                  >
-                    {twoFactorEnabled ? 'Enabled' : 'Enable 2FA'}
-                  </button>
+                <div className="flex justify-between gap-2 py-1.5 border-b border-slate-800/80">
+                  <span className="text-slate-500">Sign-In Method</span>
+                  <span className="text-slate-200 capitalize">{provider}</span>
                 </div>
-              </div>
-
-              <div className="rounded-2xl bg-[#111827] border border-slate-800 p-5 space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <KeyRound className="w-4 h-4 text-violet-400" />
-                    <h3 className="text-sm font-bold text-white">Desktop Agent API Tokens</h3>
-                  </div>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">
-                    {agentTokensCount} active
+                <div className="flex justify-between gap-2 py-1.5 border-b border-slate-800/80">
+                  <span className="text-slate-500">Profile Visibility</span>
+                  <span className={isPublicProfile ? 'text-emerald-400 font-semibold' : 'text-slate-300'}>
+                    {isPublicProfile ? 'Public' : 'Private'}
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Future RigCheck Desktop Agent integration lets you auto-detect your CPU, GPU, RAM, and drivers via a scoped API key.
-                </p>
-                {generatedToken && (
-                  <div className="p-2.5 rounded-xl bg-[#070b14] border border-violet-500/40 font-mono text-xs text-violet-300 break-all">
-                    {generatedToken}
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={handleGenerateAgentToken}
-                  className="px-3.5 py-2 rounded-xl text-xs font-semibold border transition-colors bg-violet-500/15 hover:bg-violet-500/25 border-violet-500/40 text-violet-300"
-                >
-                  Generate Preview Token
-                </button>
+                <div className="flex justify-between gap-2 py-1.5">
+                  <span className="text-slate-500">Member Since</span>
+                  <span className="text-slate-300">
+                    {profile?.created_at
+                      ? new Date(profile.created_at).toLocaleDateString()
+                      : new Date().toLocaleDateString()}
+                  </span>
+                </div>
               </div>
             </div>
+
+            <button
+              type="button"
+              onClick={handleSignOutClick}
+              disabled={signingOut}
+              className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 border border-slate-700 transition-colors disabled:opacity-50"
+            >
+              <LogOut className="w-3.5 h-3.5 text-rose-400" />
+              Sign Out
+            </button>
           </div>
-        )}
+        </div>
       </main>
     </div>
   );
 }
 
 // ============================================================================
-// 6. MAIN LOGIN PAGE COMPONENT (Connected to Supabase AuthContext)
+// 5. MAIN LOGIN PAGE COMPONENT (Email + Google / GitHub / Discord OAuth)
 // ============================================================================
 export default function LoginPage() {
   const {
@@ -827,22 +416,22 @@ export default function LoginPage() {
     loading: authLoading,
     login,
     register,
+    signInWithOAuth,
     logout,
     resetPassword,
     updatePrivacy
   } = useAuth();
   const navigate = useNavigate();
 
-  // --- Auth View Mode: 'signin' | 'register' | 'reset' ---
-  const [mode, setMode] = useState('signin');
+  const [mode, setMode] = useState('signin'); // 'signin' | 'register' | 'reset'
 
-  // --- Sign In Form State ---
+  // Sign In State
   const [signInEmail, setSignInEmail] = useState('');
   const [signInPassword, setSignInPassword] = useState('');
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [showSignInPw, setShowSignInPw] = useState(false);
 
-  // --- Create Account Form State ---
+  // Create Account State
   const [regName, setRegName] = useState('');
   const [regHandle, setRegHandle] = useState('');
   const [handleManuallyEdited, setHandleManuallyEdited] = useState(false);
@@ -852,19 +441,18 @@ export default function LoginPage() {
   const [showRegPw, setShowRegPw] = useState(false);
   const [regPublicProfile, setRegPublicProfile] = useState(true);
 
-  // --- Reset Password State ---
+  // Reset Password State
   const [resetEmail, setResetEmail] = useState('');
   const [resetSentMsg, setResetSentMsg] = useState('');
 
-  // --- Showcase Panel Interactive State ---
+  // Showcase Panel State
   const [showcaseIndex, setShowcaseIndex] = useState(0);
   const [previewPrivacyOn, setPreviewPrivacyOn] = useState(true);
 
-  // --- Feedback, Loaders & Drawer State ---
-  const [loadingAction, setLoadingAction] = useState(null); // null | 'signin' | 'register' | 'reset'
+  // Feedback & Loaders ('signin' | 'register' | 'reset' | 'google' | 'github' | 'discord' | null)
+  const [loadingAction, setLoadingAction] = useState(null);
   const [formError, setFormError] = useState('');
   const [infoMessage, setInfoMessage] = useState('');
-  const [showArchDrawer, setShowArchDrawer] = useState(false);
   const [toast, setToast] = useState(null);
 
   const showToast = (message, tone = 'success') => {
@@ -876,6 +464,25 @@ export default function LoginPage() {
     const t = setTimeout(() => setToast(null), 4000);
     return () => clearTimeout(t);
   }, [toast]);
+
+  // Surface any OAuth callback error returned in URL query or hash parameters
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashQuery = window.location.hash.includes('?')
+      ? window.location.hash.split('?')[1]
+      : '';
+    const hashParams = new URLSearchParams(hashQuery);
+
+    const errDesc =
+      searchParams.get('error_description') ||
+      hashParams.get('error_description') ||
+      searchParams.get('error') ||
+      hashParams.get('error');
+
+    if (errDesc) {
+      setFormError(decodeURIComponent(errDesc.replace(/\+/g, ' ')));
+    }
+  }, []);
 
   const switchMode = nextMode => {
     setMode(nextMode);
@@ -911,7 +518,7 @@ export default function LoginPage() {
 
   const activeShowcase = SHOWCASE_BUILDS[showcaseIndex];
 
-  // --- Form Submission Handlers (Wired to Supabase AuthContext) ---
+  // --- Email Sign In ---
   const handleSignInSubmit = async e => {
     e.preventDefault();
     setFormError('');
@@ -940,6 +547,7 @@ export default function LoginPage() {
     }
   };
 
+  // --- Email Create Account ---
   const handleRegisterSubmit = async e => {
     e.preventDefault();
     setFormError('');
@@ -978,7 +586,7 @@ export default function LoginPage() {
 
       if (!result?.session) {
         setInfoMessage(
-          'Account created! Check your inbox for a confirmation link before signing in.'
+          'Account created! Check your inbox for a verification email from RigCheck before signing in.'
         );
         setRegPassword('');
         setRegConfirmPw('');
@@ -996,6 +604,7 @@ export default function LoginPage() {
     }
   };
 
+  // --- Password Reset ---
   const handleResetSubmit = async e => {
     e.preventDefault();
     setFormError('');
@@ -1020,11 +629,31 @@ export default function LoginPage() {
     }
   };
 
-  const handleOAuthClick = providerLabel => {
-    showToast(
-      `${providerLabel} OAuth will activate once configured in Supabase Auth Providers (Phase 3). Use Email & Password or Guest Mode for now.`,
-      'info'
-    );
+  // --- Live OAuth Sign In / Sign Up (Google, GitHub, Discord) ---
+  const handleOAuthClick = async providerKey => {
+    setFormError('');
+    setInfoMessage('');
+
+    if (typeof signInWithOAuth !== 'function') {
+      setFormError('OAuth is not wired in AuthContext.jsx yet. Export signInWithOAuth from AuthContext.');
+      return;
+    }
+
+    setLoadingAction(providerKey);
+    try {
+      await signInWithOAuth(providerKey);
+      // Browser redirects to provider; keep spinner active until navigation happens
+    } catch (err) {
+      const msg = err?.message || `Could not sign in with ${providerKey}.`;
+      if (msg.toLowerCase().includes('provider is not enabled')) {
+        setFormError(
+          `${providerKey.charAt(0).toUpperCase() + providerKey.slice(1)} login is not enabled in Supabase Authentication → Providers yet.`
+        );
+      } else {
+        setFormError(msg);
+      }
+      setLoadingAction(null);
+    }
   };
 
   const handleGuestClick = () => {
@@ -1036,7 +665,7 @@ export default function LoginPage() {
       await logout();
       setSignInPassword('');
       setFormError('');
-      showToast('Signed out cleanly. See you on the next benchmark!', 'info');
+      showToast('Signed out cleanly.', 'info');
     } catch (err) {
       showToast(err?.message || 'Failed to sign out.', 'error');
     }
@@ -1060,7 +689,7 @@ export default function LoginPage() {
         <div className="relative z-10 min-h-screen flex flex-col items-center justify-center gap-3 text-slate-400">
           <Loader2 className="w-7 h-7 animate-spin text-cyan-400" />
           <span className="text-xs font-semibold tracking-wide uppercase">
-            Checking RigCheck session...
+            Loading RigCheck session...
           </span>
         </div>
       ) : user ? (
@@ -1071,7 +700,6 @@ export default function LoginPage() {
             onTogglePrivacy={updatePrivacy}
             onSignOut={handleSignOut}
             onLaunchApp={() => navigate('/')}
-            onOpenArchitecture={() => setShowArchDrawer(true)}
             showToast={showToast}
           />
         </div>
@@ -1091,14 +719,6 @@ export default function LoginPage() {
                 </div>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowArchDrawer(true)}
-              className="px-3 py-1.5 rounded-xl bg-[#0f1624] border border-slate-800 text-[11px] font-semibold text-slate-300 flex items-center gap-1.5"
-            >
-              <Server className="w-3.5 h-3.5 text-violet-400" />
-              Auth Blueprint
-            </button>
           </header>
 
           <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -1114,25 +734,21 @@ export default function LoginPage() {
                       Rig<span className="text-cyan-400">Check</span>
                     </div>
                     <div className="text-[11px] font-semibold text-slate-400 tracking-widest uppercase mt-0.5">
-                      PC Compatibility & Hardware Hub
+                      PC Compatibility &amp; Hardware Hub
                     </div>
                   </div>
                 </div>
-                <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Supabase Auth Live
-                </span>
               </div>
 
               <div className="space-y-3">
                 <h1 className="text-4xl xl:text-[2.75rem] font-black text-white tracking-tight leading-[1.1]">
                   Know what your rig can run.{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-emerald-300 to-violet-400">
-                    Sync every build.
+                    Compare every build.
                   </span>
                 </h1>
                 <p className="text-slate-400 text-base max-w-xl leading-relaxed">
-                  Input your specs once to uncover instant game & creative app compatibility, pinpoint CPU/VRAM bottlenecks, and share verified reviews with the PC builder community.
+                  Benchmark desktop components and laptops with a unified scoring formula, uncover CPU/VRAM bottlenecks, and save your rigs to compare upgrades side-by-side.
                 </p>
               </div>
 
@@ -1165,7 +781,6 @@ export default function LoginPage() {
                         ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
                         : 'bg-slate-900 border-slate-700 text-slate-400'
                     }`}
-                    title="Preview how RigCheck granular privacy redacts specs"
                   >
                     {previewPrivacyOn ? <Globe className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                     Public Preview: {previewPrivacyOn ? 'Visible' : 'Redacted'}
@@ -1260,10 +875,10 @@ export default function LoginPage() {
 
               <div className="grid grid-cols-2 gap-3 pt-1">
                 {[
-                  { icon: Laptop, text: 'Save & switch multiple desktop & laptop rigs' },
+                  { icon: Laptop, text: 'Save & compare multiple desktop & laptop rigs' },
                   { icon: Zap, text: 'Instant CPU, GPU, VRAM & RAM bottleneck alerts' },
-                  { icon: Star, text: 'Write & manage verified hardware reviews' },
-                  { icon: Shield, text: 'Granular public profile & per-spec privacy toggles' }
+                  { icon: Star, text: 'Formula-scored laptop & part rankings' },
+                  { icon: Shield, text: 'Public or private profile visibility toggles' }
                 ].map(perk => {
                   const Icon = perk.icon;
                   return (
@@ -1284,10 +899,10 @@ export default function LoginPage() {
                 <div className="lg:hidden mb-5">
                   <h1 className="text-xl font-extrabold text-white tracking-tight">
                     Know what your rig can run.{' '}
-                    <span className="text-cyan-400">Sync every build.</span>
+                    <span className="text-cyan-400">Compare every build.</span>
                   </h1>
                   <p className="text-xs text-slate-400 mt-1">
-                    Save PC profiles, detect hardware bottlenecks, and share community reviews.
+                    Save PC profiles, detect bottlenecks, and compare parts side-by-side.
                   </p>
                 </div>
 
@@ -1353,6 +968,7 @@ export default function LoginPage() {
                   </div>
                 )}
 
+                {/* Live OAuth Buttons (works for both Sign In and Create Account) */}
                 {mode !== 'reset' && (
                   <>
                     <div className="grid grid-cols-3 gap-2.5 mb-5">
@@ -1362,15 +978,20 @@ export default function LoginPage() {
                         { key: 'discord', label: 'Discord', icon: DiscordIcon }
                       ].map(prov => {
                         const Icon = prov.icon;
+                        const activeLoad = loadingAction === prov.key;
                         return (
                           <button
                             key={prov.key}
                             type="button"
                             disabled={isBusy}
-                            onClick={() => handleOAuthClick(prov.label)}
+                            onClick={() => handleOAuthClick(prov.key)}
                             className="py-2.5 px-3 rounded-xl bg-[#070b14] hover:bg-slate-800/90 border border-slate-800 hover:border-cyan-500/40 text-xs font-semibold text-slate-200 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
                           >
-                            <Icon className="w-4 h-4 shrink-0" />
+                            {activeLoad ? (
+                              <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
+                            ) : (
+                              <Icon className="w-4 h-4 shrink-0" />
+                            )}
                             <span>{prov.label}</span>
                           </button>
                         );
@@ -1653,8 +1274,8 @@ export default function LoginPage() {
                         </div>
                         <div className="text-[11px] text-slate-500 mt-0.5">
                           {regPublicProfile
-                            ? 'Showcase selected rigs & reviews (editable anytime).'
-                            : 'Keep all saved rigs hidden until you opt in.'}
+                            ? 'Showcase saved rigs on your profile (editable anytime).'
+                            : 'Keep all saved rigs private until you opt in.'}
                         </div>
                       </div>
                       <button
@@ -1754,7 +1375,7 @@ export default function LoginPage() {
                     Continue as Guest (Quick Check)
                   </button>
                   <p className="text-[11px] text-center text-slate-500 leading-relaxed">
-                    Guests can run instant game & software compatibility checks without saving device profiles or reviews.
+                    Guests can run compatibility checks and compare parts without saving builds.
                   </p>
                 </div>
               </div>
@@ -1762,29 +1383,16 @@ export default function LoginPage() {
           </main>
 
           <footer className="border-t border-slate-800/70 bg-[#070b14]/80 backdrop-blur-md py-4">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-slate-500">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                <span>RigCheck Identity Gateway • Supabase PKCE Session Layer</span>
+                <span>RigCheck • PC Hardware Compatibility &amp; Comparison Engine</span>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowArchDrawer(true)}
-                className="text-slate-400 hover:text-cyan-400 font-medium inline-flex items-center gap-1.5 transition-colors"
-              >
-                <Server className="w-3.5 h-3.5 text-violet-400" />
-                Auth Architecture
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
+              <span>Powered by Supabase &amp; PostgreSQL</span>
             </div>
           </footer>
         </div>
       )}
-
-      <AuthArchitectureDrawer
-        open={showArchDrawer}
-        onClose={() => setShowArchDrawer(false)}
-      />
 
       {toast && (
         <div
