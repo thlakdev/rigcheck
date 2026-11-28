@@ -104,4 +104,31 @@ export const hardwareService = {
 
     if (error) throw error;
   },
+  async getPublicProfileByHandle(handle) {
+    const cleanHandle = (handle || '').toLowerCase().trim();
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('id, handle, display_name, is_public, created_at')
+      .eq('handle', cleanHandle)
+      .maybeSingle();
+
+    if (profileError) throw profileError;
+    if (!profile) return null;
+
+    const { data: rigs, error: rigsError } = await supabase
+      .from('saved_rigs')
+      .select(`
+        *,
+        cpu:components!saved_rigs_cpu_id_fkey(id, brand, model, universal_score),
+        gpu:components!saved_rigs_gpu_id_fkey(id, brand, model, universal_score, vram_gb),
+        ram:components!saved_rigs_ram_id_fkey(id, brand, model, universal_score),
+        storage:components!saved_rigs_storage_id_fkey(id, brand, model, universal_score)
+      `)
+      .eq('user_id', profile.id)
+      .eq('is_public', true)
+      .order('created_at', { ascending: false });
+
+    if (rigsError) throw rigsError;
+    return { profile, rigs: rigs || [] };
+  },
 };
